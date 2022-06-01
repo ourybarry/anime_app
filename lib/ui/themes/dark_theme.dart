@@ -12,10 +12,13 @@ class DarkTheme {
           unselectedItemColor: CustomColors.TEXT_GREY,
           backgroundColor: CustomColors.SURFACE_COLOR),
       inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(),
-          fillColor: CustomColors.TEXT_LIGHT,
-          focusedBorder: OutlineInputBorder(),
-          focusColor: Colors.black,
+          border: InputBorder.none,
+          // fillColor: CustomColors.TEXT_LIGHT,
+          focusedBorder: InputBorder.none,
+          errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.zero,
+              borderSide: BorderSide(color: Colors.red)),
+          fillColor: Colors.grey,
           filled: true),
       textTheme: TextTheme(
           headline1: TextStyle(

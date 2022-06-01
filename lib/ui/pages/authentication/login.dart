@@ -1,5 +1,7 @@
 import 'package:anime/resources/api/client.dart';
 import 'package:anime/resources/authentication/authentication_manager.dart';
+import 'package:anime/resources/bloc/login_bloc.dart';
+import 'package:anime/resources/bloc/states/login_state.dart';
 import 'package:anime/resources/model/user_token.dart';
 import 'package:anime/ui/pages/home.dart';
 // import 'package:anime/resources/bloc/authentication_bloc.dart';
@@ -11,7 +13,8 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 class LoginPage extends StatefulWidget {
   // final AuthenticationBloc _authenticationBloc = AuthenticationBloc();
-  final ApiClient _apiClient = ApiClient();
+  // final ApiClient _apiClient = ApiClient();
+  final LoginBloc _loginBloc = LoginBloc();
   final AuthenticationManager _authenticationManager = AuthenticationManager();
   LoginPage({Key? key}) : super(key: key);
 
@@ -23,11 +26,21 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  bool _hasError = false;
+  String _error = '';
+
   bool _hidePassword = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(FeatherIcons.x)),
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -53,10 +66,11 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _usernameController,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                        hintText: 'Username',
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        fillColor: Colors.grey),
+                      errorStyle: TextStyle(color: Colors.red),
+                      // errorText: 'Incorrect credentials',
+                      errorText: _hasError ? _error : null,
+                      hintText: 'Username',
+                    ),
                   ),
                   SizedBox(
                     height: 20,
@@ -75,9 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ? FeatherIcons.eyeOff
                                 : FeatherIcons.eye)),
                         hintText: 'Password',
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        fillColor: Colors.grey),
+                        errorText: _hasError ? '' : null),
                   ),
                   SizedBox(
                     height: 20,
@@ -98,8 +110,25 @@ class _LoginPageState extends State<LoginPage> {
                           //         content: Text('Loading'),
                           //       );
                           //     });
-                          _submitLoginData(_usernameController.text,
+                          widget._loginBloc.initLogin(_usernameController.text,
                               _passwordController.text);
+                          widget._loginBloc.loginStream
+                              .listen((LoginState event) {
+                            // print(event.status);
+                            switch (event.status) {
+                              case LoginStatus.LOADING:
+                                _showLoadingDialog();
+                                break;
+                              case LoginStatus.ERROR:
+                                _showError(event.message);
+                                break;
+                              case LoginStatus.COMPLETED:
+                                // print(event.token);
+                                _redirect(event.token!);
+                                break;
+                              default:
+                            }
+                          });
                         },
                         child: Text('Login'),
                       ),
@@ -118,19 +147,52 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _submitLoginData(String username, String password) async {
-    // print('$username, $password');
+  _showLoadingDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            // backgroundColor: CustomColors.SURFACE_COLOR,
+
+            content: Column(mainAxisSize: MainAxisSize.min, children: [
+              SizedBox(
+                  width: 40, height: 40, child: CircularProgressIndicator()),
+            ]),
+          );
+        });
+  }
+
+  _showError(String error) {
+    Navigator.pop(context); //Dismiss alert dialog
+    setState(() {
+      _hasError = true;
+      _error = error;
+    });
+  }
+
+  _redirect(UserToken token) {
     try {
-      final result = await widget._apiClient
-          .post('/auth/login', {'username': username, 'password': password});
-      // print(result);
-      UserToken token = UserToken.fromJson(result);
-      print(token.serialize());
-      widget._authenticationManager.authenticateUserToken(token.serialize());
+      widget._authenticationManager.saveUserToken(token.serialize().toString());
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('You are logged in')));
       Navigator.pop(context);
-      // print(token.serialize());
     } catch (e) {
       print(e.toString());
     }
   }
+  // _submitLoginData(String username, String password) async {
+  //   // print('$username, $password');
+  //   try {
+  //     final result = await widget._apiClient
+  //         .post('/auth/login', {'username': username, 'password': password});
+  //     // print(result);
+  //     UserToken token = UserToken.fromJson(result);
+  //     print(token.serialize());
+  //     widget._authenticationManager.saveUserToken(token.serialize().toString());
+  //     Navigator.pop(context);
+  //     // print(token.serialize());
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 }

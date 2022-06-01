@@ -1,3 +1,4 @@
+import 'package:anime/resources/authentication/authentication_manager.dart';
 import 'package:anime/ui/pages/authentication/login.dart';
 import 'package:anime/ui/pages/home.dart';
 import 'package:anime/ui/pages/notifications.dart';
@@ -7,6 +8,7 @@ import 'package:anime/ui/themes/dark_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main(List<String> args) {
   runApp(const MyApp());
@@ -17,6 +19,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // FlutterSecureStorage.UNSUPPORTED_PLATFORM;
     return MaterialApp(
       home: Home(),
       theme: DarkTheme.theme,
@@ -27,6 +30,7 @@ class MyApp extends StatelessWidget {
 
 class Home extends StatefulWidget {
   final pages = [HomePage(), SearchPage(), SearchPage()];
+  final AuthenticationManager _authenticationManager = AuthenticationManager();
 
   Home({Key? key}) : super(key: key);
 
@@ -36,9 +40,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int currentPage = 0;
+  // late final Future<bool> _userIsAuthenticated;
 
   @override
   void initState() {
+    // _userIsAuthenticated = widget._authenticationManager.userIsLoggedIn();
     super.initState();
     // currentPage = 0; TODO:
   }
@@ -64,7 +70,19 @@ class _HomeState extends State<Home> {
           GestureDetector(
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return LoginPage();
+                return FutureBuilder(
+                    future: widget._authenticationManager.userIsLoggedIn(),
+                    builder: (context, AsyncSnapshot<bool> snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data == true) //User is logged in
+                        {
+                          return UserPage();
+                        } else {
+                          return LoginPage();
+                        }
+                      }
+                      return Container();
+                    });
               }));
             },
             child: CircleAvatar(

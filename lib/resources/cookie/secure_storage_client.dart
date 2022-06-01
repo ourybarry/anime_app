@@ -17,6 +17,12 @@ class SecureStorageClient {
         .catchError((error) => throw ItemNotSavedException(error));
   }
 
+  void deleteItem(String itemKey) async {
+    await _storage
+        .delete(key: itemKey)
+        .catchError((error) => throw ItemNotDeletedException(error));
+  }
+
   Future<bool> itemExist(String itemKey) async {
     return await _storage.containsKey(key: itemKey);
   }

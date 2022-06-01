@@ -17,3 +17,8 @@ class ItemNotSavedException extends StorageException {
   ItemNotSavedException([message])
       : super(message, 'Error trying to save item : ');
 }
+
+class ItemNotDeletedException extends StorageException {
+  ItemNotDeletedException([message])
+      : super(message, 'Error trying to delete item : ');
+}

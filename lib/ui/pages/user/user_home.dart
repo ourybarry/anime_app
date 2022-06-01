@@ -1,10 +1,13 @@
+import 'package:anime/resources/authentication/authentication_manager.dart';
 import 'package:anime/ui/pages/user/user_activity.dart';
 import 'package:anime/ui/pages/user/user_header.dart';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 class UserPage extends StatefulWidget {
-  const UserPage({Key? key}) : super(key: key);
+  final AuthenticationManager _authenticationManager = AuthenticationManager();
+  UserPage({Key? key}) : super(key: key);
 
   @override
   State<UserPage> createState() => _UserPageState();
@@ -26,6 +29,16 @@ class _UserPageState extends State<UserPage>
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        actions: [
+          IconButton(
+              onPressed: () async {
+                widget._authenticationManager.deleteUserToken();
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('You have been logged out')));
+                Navigator.pop(context);
+              },
+              icon: Icon(FeatherIcons.logOut))
+        ],
       ),
       body: CustomScrollView(
         slivers: [
