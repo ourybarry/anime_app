@@ -2,7 +2,7 @@ import 'package:anime/resources/model/anime/poster_image.dart';
 import 'package:deep_pick/deep_pick.dart';
 
 class Manga {
-  final Map<String, String> titles;
+  final Map<String, String?> titles;
   final String slug;
   final String canonicalTitle;
   final String? synopsis;
@@ -18,7 +18,7 @@ class Manga {
       required this.popularity});
 
   factory Manga.fromPick(RequiredPick pick) {
-    final Map<String, String> titles = pick('titles').asMapOrThrow();
+    final Map<String, String?> titles = pick('titles').asMapOrThrow();
     final String slug = pick('slug').asStringOrThrow();
     final String canTitle = pick('canonicalTitle').asStringOrThrow();
     final PosterImage poster =

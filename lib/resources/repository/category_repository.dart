@@ -9,7 +9,7 @@ class CategoryRepository {
   Future<CategoryResult> getCategories({int? page = 1, int? limit = 10}) async {
     const String path = '/categories';
     final params = {'page': page.toString(), 'limit': limit.toString()};
-    final result = await _client.get(path, params);
+    final result = await _client.get(path, params: params);
 
     return CategoryResult.fromJson(result);
   }

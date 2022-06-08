@@ -8,7 +8,7 @@ class MangaRepository {
   Future<MangaResult> getByQuery(String query) async {
     const String path = '/manga/autocomplete';
     final params = {'query': query};
-    final result = await _client.get(path, params);
+    final result = await _client.get(path, params: params);
 
     return MangaResult.fromJson(result);
   }
@@ -16,7 +16,7 @@ class MangaRepository {
   Future<MangaResult> getTrending() async {
     const String path = '/manga/trending';
 
-    final result = await _client.get(path, null);
+    final result = await _client.get(path);
 
     return MangaResult.fromJson(result);
   }
@@ -26,7 +26,7 @@ class MangaRepository {
     // print('fetching');
     String path = '/manga/' + category.slug;
     final params = {'page': page.toString(), 'limit': limit.toString()};
-    final result = await _client.get(path, params);
+    final result = await _client.get(path, params: params);
 
     // print(result);
 

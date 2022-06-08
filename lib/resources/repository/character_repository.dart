@@ -7,7 +7,7 @@ class CharacterRepository {
   Future<CharacterResult> getByQuery(String query) async {
     const String path = '/character/autocomplete';
     final params = {'query': query};
-    final result = await _client.get(path, params);
+    final result = await _client.get(path, params: params);
 
     return CharacterResult.fromJson(result);
   }

@@ -7,7 +7,7 @@ class SiteAnnouncementRepository {
   Future<SiteAnnouncementResult> getAll() async {
     const String path = '/site/announcement';
 
-    final result = await _client.get(path, null);
+    final result = await _client.get(path);
 
     return SiteAnnouncementResult.fromJson(result);
   }

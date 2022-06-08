@@ -8,7 +8,7 @@ class AnimeRepository {
   Future<AnimeResult> getByQuery(String query) async {
     const String path = '/anime/autocomplete';
     final params = {'query': query};
-    final result = await _client.get(path, params);
+    final result = await _client.get(path, params: params);
 
     return AnimeResult.fromJson(result);
   }
@@ -18,7 +18,7 @@ class AnimeRepository {
     // print('fetching');
     String path = '/anime/' + category.slug;
     final params = {'page': page.toString(), 'limit': limit.toString()};
-    final result = await _client.get(path, params);
+    final result = await _client.get(path, params: params);
 
     // print(result);
 
@@ -28,7 +28,7 @@ class AnimeRepository {
   Future<AnimeResult> getTrending() async {
     const String path = '/anime/trending';
 
-    final result = await _client.get(path, null);
+    final result = await _client.get(path);
 
     return AnimeResult.fromJson(result);
   }

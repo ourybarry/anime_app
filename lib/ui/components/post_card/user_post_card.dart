@@ -8,7 +8,7 @@ class UserPostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
       child: Column(
         children: [
           UserPostCardHeader(),

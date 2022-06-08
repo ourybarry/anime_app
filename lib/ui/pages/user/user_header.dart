@@ -1,53 +1,10 @@
+import 'package:anime/resources/model/user/user.dart';
 import 'package:anime/ui/themes/custom_colors.dart';
 import 'package:flutter/material.dart';
 
 class UserHeader extends StatelessWidget {
-  UserHeader({Key? key}) : super(key: key);
-
-  final List<Widget> _header = [
-    GestureDetector(
-      child: Column(
-        children: [
-          Text(
-            '12',
-            style: TextStyle(color: Colors.white),
-          ),
-          Text(
-            'Reactions',
-            style: TextStyle(color: Colors.grey),
-          )
-        ],
-      ),
-    ),
-    GestureDetector(
-      child: Column(
-        children: [
-          Text(
-            '12',
-            style: TextStyle(color: Colors.white),
-          ),
-          Text(
-            'Followers',
-            style: TextStyle(color: Colors.grey),
-          )
-        ],
-      ),
-    ),
-    GestureDetector(
-      child: Column(
-        children: [
-          Text(
-            '12',
-            style: TextStyle(color: Colors.white),
-          ),
-          Text(
-            'Following',
-            style: TextStyle(color: Colors.grey),
-          )
-        ],
-      ),
-    )
-  ];
+  final User user;
+  UserHeader({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -72,25 +29,67 @@ class UserHeader extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: Text(
-                'Username',
+                user.name,
                 style: Theme.of(context).textTheme.headline1,
                 textAlign: TextAlign.left,
               ),
             ),
             Container(
               height: 50,
-              child: ListView.separated(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) => _header.elementAt(index),
-                  separatorBuilder: (context, index) => VerticalDivider(
-                        color: Colors.white,
-                      ),
-                  itemCount: _header.length),
+              child: _header(),
             )
           ],
         ),
       ),
+    );
+  }
+
+  Widget _header() {
+    return Row(
+      children: [
+        GestureDetector(
+          child: Column(
+            children: [
+              Text(
+                user.postsCount.toString(),
+                style: TextStyle(color: Colors.white),
+              ),
+              Text(
+                'Posts',
+                style: TextStyle(color: Colors.grey),
+              )
+            ],
+          ),
+        ),
+        GestureDetector(
+          child: Column(
+            children: [
+              Text(
+                user.followersCount.toString(),
+                style: TextStyle(color: Colors.white),
+              ),
+              Text(
+                'Followers',
+                style: TextStyle(color: Colors.grey),
+              )
+            ],
+          ),
+        ),
+        GestureDetector(
+          child: Column(
+            children: [
+              Text(
+                user.followingCount.toString(),
+                style: TextStyle(color: Colors.white),
+              ),
+              Text(
+                'Following',
+                style: TextStyle(color: Colors.grey),
+              )
+            ],
+          ),
+        )
+      ],
     );
   }
 }

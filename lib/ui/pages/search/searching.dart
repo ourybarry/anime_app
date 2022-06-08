@@ -26,7 +26,7 @@ class _SearchingState extends State<Searching>
   List<Anime> _anime = [];
   List<Character> _character = [];
 
-  final List<String> _tabs = const ['Anime', 'Manga', 'Character'];
+  final List<String> _tabs = const ['Anime', 'Manga'];
 
   @override
   void initState() {
@@ -79,9 +79,9 @@ class _SearchingState extends State<Searching>
                 MangaSuggestions(
                   options: [],
                 ),
-                CharacterSuggestions(
-                  options: _character,
-                )
+                // CharacterSuggestions(
+                //   options: _character,
+                // )
               ])
             : Container(
                 padding: EdgeInsets.all(10),

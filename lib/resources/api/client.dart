@@ -5,13 +5,19 @@ import 'package:anime/exceptions/api_exception.dart';
 import 'package:http/http.dart' as http;
 
 class ApiClient {
+  //TODO: read api base url from .env
   final String _baseUrl = 'localhost:3000';
 
-  Future<dynamic> get(String path, Map<String, String>? params) async {
-    final Uri uri = Uri.http(_baseUrl, '/api/v1' + path, params);
+  Future<dynamic> get(String path,
+      {Map<String, String>? params, Map<String, String>? headers}) async {
+    final Uri uri = Uri.http(
+      _baseUrl,
+      '/api/v1' + path,
+      params,
+    );
     var _parsedResponse;
     try {
-      final response = await http.get(uri);
+      final response = await http.get(uri, headers: headers);
       _parsedResponse = _parseResponse(response);
     } on SocketException {
       throw FetchDataException('No internet');

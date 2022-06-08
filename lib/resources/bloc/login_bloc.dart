@@ -18,7 +18,7 @@ class LoginBloc {
     _subject.add(LoginState.loading('Loading'));
     try {
       final result = await _apiClient
-          .post('/auth/login', {'username': username, 'password': password});
+          .post('/auth/login', {'email': username, 'password': password});
       _subject.add(
           LoginState.completed('Login Success', UserToken.fromJson(result)));
     } catch (e) {
